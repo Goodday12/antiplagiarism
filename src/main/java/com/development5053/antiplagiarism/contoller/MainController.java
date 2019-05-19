@@ -33,9 +33,5 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("/teacher-page")
-    public String teacherPage(){
-    return "teacher-page";
-    }
 
 }
