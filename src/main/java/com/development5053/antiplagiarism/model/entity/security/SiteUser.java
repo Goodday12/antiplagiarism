@@ -1,5 +1,6 @@
 package com.development5053.antiplagiarism.model.entity.security;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,16 @@ public class SiteUser implements UserDetails {
     private String password;
     @Column(nullable = false, unique = true)
     private String email;
+    @Enumerated(EnumType.STRING)
+    private Authority role = Authority.STUDENT;
+
+    public SiteUser(String firstName, String lastName, String username, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+    }
 
 
     @Override
@@ -33,7 +44,7 @@ public class SiteUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return this.password;
     }
 
     @Override
