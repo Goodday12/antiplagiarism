@@ -1,13 +1,10 @@
-package test.back.code;
+package com.development5053.antiplagiarism.util.similirityFinder;
 
 
-import javax.swing.text.View;
-import java.nio.channels.Pipe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-//import javafx.utils;
 
 
 public class EncodedSequenceMatcher {
