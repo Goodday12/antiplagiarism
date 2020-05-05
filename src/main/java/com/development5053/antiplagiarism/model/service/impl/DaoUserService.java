@@ -47,6 +47,11 @@ public class DaoUserService implements DaoService<SiteUser>, UserDetailsService 
     }
 
     @Override
+    public SiteUser findByName(String name) {
+        return userDao.findByName(name);
+    }
+
+    @Override
     public void delete(SiteUser user) {
         userDao.delete(user);
     }

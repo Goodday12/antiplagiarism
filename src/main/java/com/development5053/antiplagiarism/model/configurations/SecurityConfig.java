@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Configuration
@@ -71,27 +70,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/").permitAll()
-                    .antMatchers("/teacher-page/**").access("hasRole('TEACHER')")
-                    .antMatchers("/code-checker").access("hasAnyRole('TEACHER','STUDENT')")
-                    .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-//                    .loginProcessingUrl("/perform_login")
-//                    .defaultSuccessUrl("/")
-//                .failureUrl("/login?error=true")
-//                .failureHandler(aut)
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .and()
-                .logout()
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .permitAll()
-                    .and()
-                .csrf()
-                    .disable();
+                .antMatchers("/teacher-page/**").access("hasRole('TEACHER')")
+                .antMatchers("/code-checker").access("hasAnyRole('TEACHER','STUDENT')")
+                .antMatchers("/load-file").access("hasAnyRole('TEACHER','STUDENT')")
+                .antMatchers("/").permitAll().anyRequest().authenticated()
+                .and()
+                .httpBasic();
+//                .formLogin()
+//                .loginProcessingUrl("/login")
+//                .permitAll()
+////                    .loginProcessingUrl("/perform_login")
+////                    .defaultSuccessUrl("/")
+////                .failureUrl("/login?error=true")
+////                .failureHandler(aut)
+//                .usernameParameter("usernameLogin")
+//                .passwordParameter("passwordLogin")
+//                .and()
+//                .logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .permitAll()
+//                .and()
+//                .csrf()
+//                .disable();
 
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
 

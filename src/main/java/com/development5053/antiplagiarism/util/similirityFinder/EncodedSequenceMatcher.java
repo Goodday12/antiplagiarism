@@ -121,6 +121,9 @@ public class EncodedSequenceMatcher {
             for (int i = start2; i < finish2; ++i) {
                 second.set(i, new Pair(-1, -1));
             }
+            for (int i = start1; i < start1 + x; ++i) {
+                first.set(i, new Pair(-2, -2));
+            }
         } while (x > 0);
 
 //        merge(res);

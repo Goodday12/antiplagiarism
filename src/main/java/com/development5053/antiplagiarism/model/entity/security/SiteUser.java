@@ -1,13 +1,15 @@
 package com.development5053.antiplagiarism.model.entity.security;
 
-import lombok.Builder;
+import com.development5053.antiplagiarism.model.entity.Code;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -18,15 +20,21 @@ public class SiteUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
     @Column(nullable = false, unique = true)
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     @Column(nullable = false, unique = true)
-    private String email;
+    private final String email;
     @Enumerated(EnumType.STRING)
-    private Authority role = Authority.STUDENT;
+    private final Authority role = Authority.STUDENT;
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
+    List<Code> userCode = new ArrayList<>();
 
     public SiteUser(String firstName, String lastName, String username, String email, String password) {
         this.firstName = firstName;
@@ -34,6 +42,16 @@ public class SiteUser implements UserDetails {
         this.email = email;
         this.password = password;
         this.username = username;
+    }
+
+    public void addCode(Code code) {
+        userCode.add(code);
+        code.setUser(this);
+    }
+
+    public void removeCode(Code code) {
+        userCode.remove(code);
+        code.setUser(null);
     }
 
 
@@ -45,6 +63,11 @@ public class SiteUser implements UserDetails {
     @Override
     public String getPassword() {
         return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
     }
 
     @Override
@@ -67,5 +90,16 @@ public class SiteUser implements UserDetails {
         return false;
     }
 
-
+    @Override
+    public String toString() {
+        return "SiteUser{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

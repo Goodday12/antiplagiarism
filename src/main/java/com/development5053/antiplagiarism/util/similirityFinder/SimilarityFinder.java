@@ -1,20 +1,18 @@
 package com.development5053.antiplagiarism.util.similirityFinder;
 
-
-import antlr.Token;
-import com.development5053.antiplagiarism.util.antlr.cpp.CPP14Lexer;
 import com.development5053.antiplagiarism.util.antlr.charp.CSharpLexer;
+import com.development5053.antiplagiarism.util.antlr.cpp.CPP14Lexer;
 import com.development5053.antiplagiarism.util.antlr.java.Java9Lexer;
-import com.sun.corba.se.impl.oa.toa.TOA;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SimilarityFinder {
@@ -44,15 +42,15 @@ public class SimilarityFinder {
         JAVA, CPP, CSHARP,
     }
 
-    private static LangSpec javaSpec = new LangSpec(62, 63, 65, 66, 120, 117, 118);
-    private static LangSpec cppSpec = new LangSpec(134, 141, 140, 142, 151, 149, 150);
-    private static LangSpec csharpSpec = new LangSpec(114, 116, 117, 118, 195, 4, 5);
+    private static final LangSpec javaSpec = new LangSpec(62, 63, 65, 66, 120, 117, 118);
+    private static final LangSpec cppSpec = new LangSpec(134, 141, 140, 142, 151, 149, 150);
+    private static final LangSpec csharpSpec = new LangSpec(114, 116, 117, 118, 195, 4, 5);
 
 
-    private Map<String, Integer> stringMap = new HashMap<>();
-    private Map<String, Integer> intMap = new HashMap<>();
-    private Map<String, Integer> floatMap = new HashMap<>();
-    private Map<String, Integer> charMap = new HashMap<>();
+    private final Map<String, Integer> stringMap = new HashMap<>();
+    private final Map<String, Integer> intMap = new HashMap<>();
+    private final Map<String, Integer> floatMap = new HashMap<>();
+    private final Map<String, Integer> charMap = new HashMap<>();
 
     private List<? extends Token> tokens1;
     private List<? extends Token> tokens2;
@@ -95,16 +93,13 @@ public class SimilarityFinder {
         Map<String, Integer> encodingMap = fillMaps(tokens1, tokens2, spec);
         encoding1 = getEncoding(tokens1, encodingMap);
         encoding2 = getEncoding(tokens2, encodingMap);
-        System.out.println(encoding1);
-        System.out.println(encoding2);
 
         EncodedSequenceMatcher matcher = new EncodedSequenceMatcher(encoding1, encoding2);
         List<EqualsBlock> blocks = matcher.getRate();
-        System.out.println("Blocks = " + blocks);
         blocks.stream().map(this::decode).forEach(result::add);
 
         int plagLength = blocks.stream().mapToInt(EqualsBlock::lengthSecond).sum();
-        return (double) plagLength / encoding2.size();
+        return (2.0 * plagLength) / (encoding1.size() + encoding2.size());
     }
 
     public Token getFirstToken(int pos) {
@@ -217,7 +212,6 @@ public class SimilarityFinder {
 //        tokens2 = finder.findTokens(code2, spec, lang);
         Map<String, Integer> encodingMap = finder.fillMaps(tokens1, tokens2, spec);
         encoding1 = finder.getEncoding(tokens1, encodingMap);
-        System.out.println(encoding1);
 
 
 
